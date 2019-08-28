@@ -1,103 +1,51 @@
 <template>
     <div>
         <el-row :gutter="20">
-            <el-col :span="8">
-                <el-card shadow="hover" class="mgb20" style="height:252px;">
-                    <div class="user-info">
-                        <img src="../../assets/img/img.jpg" class="user-avator" alt="">
-                        <div class="user-info-cont">
-                            <div class="user-info-name">{{name}}</div>
-                            <div>{{role}}</div>
-                        </div>
-                    </div>
-                    <div class="user-info-list">上次登录时间：<span>2018-01-01</span></div>
-                    <div class="user-info-list">上次登录地点：<span>东莞</span></div>
-                </el-card>
-                <el-card shadow="hover" style="height:252px;">
+            <!-- 报警信息table -->
+            <el-col :span="16">
+                <el-card shadow="hover" class="mgb20" style="height:350px;">
                     <div slot="header" class="clearfix">
-                        <span>语言详情</span>
+                        <span>报警信息:</span>
                     </div>
-                    Vue
-                    <el-progress :percentage="71.3" color="#42b983"></el-progress>
-                    JavaScript
-                    <el-progress :percentage="24.1" color="#f1e05a"></el-progress>
-                    CSS
-                    <el-progress :percentage="3.7"></el-progress>
-                    HTML
-                    <el-progress :percentage="0.9" color="#f56c6c"></el-progress>
+                    <el-table :data="tableData" border style="width: 100%">
+                        <el-table-column prop="date" label="标题5" width="180"></el-table-column>
+                        <el-table-column prop="name" label="批次" width="180"></el-table-column>
+                        <el-table-column prop="address" label="原因"></el-table-column>
+                        <el-table-column prop="option" label="操作"></el-table-column>
+                    </el-table>
                 </el-card>
             </el-col>
-            <el-col :span="16">
-                <el-row :gutter="20" class="mgb20">
-                    <el-col :span="8">
-                        <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-1">
-                                <i class="el-icon-lx-people grid-con-icon"></i>
-                                <div class="grid-cont-right">
-                                    <div class="grid-num">1234</div>
-                                    <div>用户访问量</div>
-                                </div>
-                            </div>
-                        </el-card>
-                    </el-col>
-                    <el-col :span="8">
-                        <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-2">
-                                <i class="el-icon-lx-notice grid-con-icon"></i>
-                                <div class="grid-cont-right">
-                                    <div class="grid-num">321</div>
-                                    <div>系统消息</div>
-                                </div>
-                            </div>
-                        </el-card>
-                    </el-col>
-                    <el-col :span="8">
-                        <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-3">
-                                <i class="el-icon-lx-goods grid-con-icon"></i>
-                                <div class="grid-cont-right">
-                                    <div class="grid-num">5000</div>
-                                    <div>数量</div>
-                                </div>
-                            </div>
-                        </el-card>
-                    </el-col>
-                </el-row>
-                <el-card shadow="hover" style="height:403px;">
+            <!-- 运行情况统计pie -->
+            <el-col :span="8">
+                <el-card shadow="hover" style="height:350px;">
                     <div slot="header" class="clearfix">
-                        <span>待办事项</span>
-                        <el-button style="float: right; padding: 3px 0" type="text">添加</el-button>
-                    </div>
-                    <el-table :data="todoList" :show-header="false" height="304" style="width: 100%;font-size:14px;">
-                        <el-table-column width="40">
-                            <template slot-scope="scope">
-                                <el-checkbox v-model="scope.row.status"></el-checkbox>
-                            </template>
-                        </el-table-column>
-                        <el-table-column>
-                            <template slot-scope="scope">
-                                <div class="todo-item" :class="{'todo-item-del': scope.row.status}">{{scope.row.title}}</div>
-                            </template>
-                        </el-table-column>
-                        <el-table-column width="60">
-                            <template slot-scope="scope">
-                                <i class="el-icon-edit"></i>
-                                <i class="el-icon-delete"></i>
-                            </template>
-                        </el-table-column>
-                    </el-table>
+                        <span>运行情况统计</span>
+                        <!-- <el-button style="float: right; padding: 3px 0" type="text">添加</el-button> -->
+                    </div>                  
+                    <schart class="wrapper" canvasId="canvas1" type="pie" :data="data1" :options="options1"></schart>                    
                 </el-card>
             </el-col>
         </el-row>
         <el-row :gutter="20">
-            <el-col :span="12">
-                <el-card shadow="hover">
-                    <schart ref="bar" class="schart" canvasId="bar" :data="data" type="bar" :options="options"></schart>
+            <!-- 批量运行时间统计line -->
+            <el-col :span="14">
+                <el-card shadow="hover" style="height:380px;">
+                    <div slot="header" class="clearfix">
+                        <span>当日批量完成度百分比</span>                               
+                    </div>  
+                    <schart ref="line" class="schart" canvasId="line" :data="data2" type="line" :options="options2"></schart>
                 </el-card>
             </el-col>
-            <el-col :span="12">
-                <el-card shadow="hover">
-                    <schart ref="line" class="schart" canvasId="line" :data="data" type="line" :options="options2"></schart>
+            <!-- 作业清单table -->
+            <el-col :span="10">
+                <el-card shadow="hover" style="height:380px;">
+                    <div slot="header" class="clearfix">
+                        <span>T + > 1 作业清单</span>
+                    </div>   
+                    <el-table :data="jobData" border style="width: 100%">
+                        <el-table-column prop="date" label="表单"></el-table-column>
+                        <el-table-column prop="name" label="批次"></el-table-column>
+                    </el-table>
                 </el-card>
             </el-col>
         </el-row>
@@ -112,31 +60,34 @@
         data() {
             return {
                 name: localStorage.getItem('ms_username'),
-                todoList: [{
-                        title: '今天要修复100个bug',
-                        status: false,
-                    },
-                    {
-                        title: '今天要修复100个bug',
-                        status: false,
-                    },
-                    {
-                        title: '今天要写100行代码加几个bug吧',
-                        status: false,
-                    }, {
-                        title: '今天要修复100个bug',
-                        status: false,
-                    },
-                    {
-                        title: '今天要修复100个bug',
-                        status: true,
-                    },
-                    {
-                        title: '今天要写100行代码加几个bug吧',
-                        status: true,
-                    }
+                tableData: [{
+                    date: '2016-05-02',
+                    name: '20190815',
+                    address: '数据文件未找到',
+                    option: '通知原系统'
+                }, {
+                    date: '2016-05-04',
+                    name: '20190821',
+                    address: '数据乱码',
+                    option: '查看详情'
+                }, {
+                    date: '2016-05-01',
+                    name: '20190823',
+                    address: 'impala超时',
+                    option: '重跑'
+                }, {
+                    date: '2016-05-03',
+                    name: '20190825',
+                    address: '表结构变动',
+                    option: '通知大数据'
+                }],
+                data1: [
+				    {name: 'running', value: 20},
+				    {name: 'done', value: 30},
+				    {name: 'pending', value: 10},
+                    {name: 'fail', value: 40},
                 ],
-                data: [{
+                data2: [{
                         name: '2018/09/04',
                         value: 1083
                     },
@@ -165,21 +116,18 @@
                         value: 1065
                     }
                 ],
-                options: {
-                    title: '最近七天每天的用户访问量',
-                    showValue: false,
-                    fillColor: 'rgb(45, 140, 240)',
-                    bottomPadding: 30,
-                    topPadding: 30
+               
+                options1: {				  
+                    radius: 60, 
                 },
                 options2: {
-                    title: '最近七天用户访问趋势',
+                    //title: '批量运行时间统计',
                     fillColor: '#FC6FA1',
                     axisColor: '#008ACD',
                     contentColor: '#EEEEEE',
-                    bgColor: '#F5F8FD',
+                    bgColor: '#FFFFFF',
                     bottomPadding: 30,
-                    topPadding: 30
+                    topPadding:1
                 }
             }
         },
@@ -221,7 +169,7 @@
                 }, 300);
             },
             renderChart(){
-                this.$refs.bar.renderChart();
+                this.$refs.pie.renderChart();
                 this.$refs.line.renderChart();
             }
         }
